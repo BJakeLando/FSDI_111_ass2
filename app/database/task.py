@@ -20,3 +20,51 @@ def scan():
     results = cursor.fetchall()
     cursor.close()
     return output_formatter(results)
+
+def insert(raw_data):
+    task_data = (
+        raw_data.get("title"),
+        raw_data.get("subtitle"),
+        raw_data.get("body")
+    )
+    statement ="""
+        INSERT INTO task (
+            title,
+            subtitle,
+            body
+        ) VALUES (
+            ?, ?, ?
+        )
+    """
+    conn = get_db()
+    conn.execute(statement, task_data)
+    conn.commit()
+    conn.close()
+
+def update(x, update_data):
+    task_data = (
+        update_data.get("title"),
+        update_data.get("subtitle"),
+        update_data.get("body"),
+        x
+    )
+    statement = """
+    UPDATE task 
+    Set title = ?,
+        subtitle =?,
+        body =?
+    WHERE id =?
+    """
+    conn = get_db()
+    conn.execute(statement, task_data)
+    conn.commit()
+    conn.close()
+
+
+def delete(x):
+    conn = get_db()
+    conn.execute("DELETE FROM task WHERE id=?", (x, ))
+    conn.commit()
+    conn.close()
+
+    
