@@ -21,6 +21,13 @@ def scan():
     cursor.close()
     return output_formatter(results)
 
+def select_by_id(pk):
+    conn = get_db()
+    cursor = conn.execute("SELECT * FROM task WHERE id=?", (pk, ))
+    results = cursor.fetchall()
+    cursor.close()
+    return output_formatter(results)
+
 def insert(raw_data):
     task_data = (
         raw_data.get("title"),
@@ -41,12 +48,12 @@ def insert(raw_data):
     conn.commit()
     conn.close()
 
-def update(x, update_data):
+def update(pk, update_data):
     task_data = (
         update_data.get("title"),
         update_data.get("subtitle"),
         update_data.get("body"),
-        x
+        pk
     )
     statement = """
     UPDATE task 
@@ -61,9 +68,9 @@ def update(x, update_data):
     conn.close()
 
 
-def delete(x):
+def delete(pk):
     conn = get_db()
-    conn.execute("DELETE FROM task WHERE id=?", (x, ))
+    conn.execute("DELETE FROM task WHERE id=?", (pk, ))
     conn.commit()
     conn.close()
 
